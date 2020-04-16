@@ -16,6 +16,7 @@ def data(request):
 
 
 def test_to_verify_response_contains_4_days_of_data(data):
+	# Is the response contains 4 days of data
 	days = set()
 	for info in data['list']:
 		d = parse(info['dt_txt'])
@@ -28,6 +29,7 @@ def test_to_verify_response_contains_4_days_of_data(data):
 
 
 def test_to_verify_hourly_forecast_interval(data):
+	# Is all the forecast in the hourly interval ( no hour should be missed )
 	start_time = parse(data['list'][0]['dt_txt'])
 	for i in range(1, len(data['list'])):
 		end_time = parse(data['list'][i]['dt_txt'])
@@ -35,10 +37,8 @@ def test_to_verify_hourly_forecast_interval(data):
 		# Verify forecast is in hourly interval
 		if end_time.minute == 0 and end_time.second == 0:
 			diff = end_time - start_time
-
 			if diff.seconds == 3600:
 				start_time = end_time
-
 			else:
 				print("One Hour is missed.")
 				assert False
@@ -48,6 +48,7 @@ def test_to_verify_hourly_forecast_interval(data):
 
 
 def test_to_verify_tempature_for_all_days(data):
+	# For all 4 days, the temp should not be less than temp_min and not more than temp_max
 	for info in data['list']:
 		temp = info['main']['temp']
 		temp_min = info['main']['temp_min']
@@ -61,6 +62,7 @@ def test_to_verify_tempature_for_all_days(data):
 
 
 def test_to_verify_weather_description_for_id_500(data):
+	# If the weather id is 500, the description should be light rain
 	for info in data['list']:
 		if info['weather'][0]['id'] == 500:
 			if info['weather'][0]['description'] == 'light rain':
@@ -70,6 +72,7 @@ def test_to_verify_weather_description_for_id_500(data):
 
 
 def test_to_verify_weather_description_for_id_800(data):
+	# If the weather id is 800, the description should be a clear sky
 	for info in data['list']:
 		if info['weather'][0]['id'] == 800:
 			if info['weather'][0]['description'] == 'clear sky':
